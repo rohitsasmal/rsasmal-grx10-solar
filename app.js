@@ -11,7 +11,6 @@ app.use(express.json());
 
 // Calculate solar panel information
 app.post('/calculate', (req, res) => {
-    console.log(req.body)
     const { electricityBill, roofArea } = req.body;
     const numPanels = Math.ceil(electricityBill / 420);
     const requiredArea = numPanels * 2; // Each panel is 2m x 1m
