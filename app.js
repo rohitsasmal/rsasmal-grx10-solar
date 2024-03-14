@@ -1,0 +1,35 @@
+const express = require('express');
+const sqlite3 = require('sqlite3');
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Initialize SQLite database
+const db = new sqlite3.Database('phone_numbers.db');
+db.run('CREATE TABLE IF NOT EXISTS phones (number TEXT)');
+
+app.use(express.json());
+
+// Calculate solar panel information
+app.post('/calculate', (req, res) => {
+    const { electricityBill, roofArea } = req.body;
+    const numPanels = Math.ceil(electricityBill / 420);
+    const requiredArea = numPanels * 2; // Each panel is 2m x 1m
+    const capitalNeeded = numPanels * 60000 / 2;
+    const breakevenYears = Math.ceil(capitalNeeded / (electricityBill * 12));
+    const earnings25Years = 2500 * 12 * 25 - capitalNeeded; // Assumed constant earnings
+
+    // Save phone number to database (replace with your own logic)
+    db.run('INSERT INTO phones (number) VALUES (?)', req.body.phoneNumber);
+
+    res.json({
+        numPanels,
+        requiredArea,
+        capitalNeeded,
+        breakevenYears,
+        earnings25Years,
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
